@@ -5,8 +5,6 @@ public class Usuario {
     private double ingresos;
     private double gastos;
     private double deudas;
-    private double capacidadEndeudamiento;
-    private double cuotaMaxima;
 
     public Usuario(String nombre,double ingresos, double gastos, double deudas){
 
@@ -25,11 +23,12 @@ public class Usuario {
         return gastos;}
     public double getDeudas(){
         return deudas;}
-    public double calcularCE(){
-        double ingresoDisponible =ingresos-gastos-deudas;
-        return ingresoDisponible*0.4; }
-    public double calcularCM(){
-        return calcularCE();
+    public double capacidadMensual() {
+        return ingresos - gastos - deudas;
+    }
+
+    public boolean puedePagar(double cuota) {
+        return cuota <= capacidadMensual();
     }
     }
 
