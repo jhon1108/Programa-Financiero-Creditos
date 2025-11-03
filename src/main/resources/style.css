@@ -1,0 +1,25 @@
+.root,
+.text-field,
+.combo-box,
+.text-area {
+    -fx-font-family: "Poppins";
+}
+.label {
+    -fx-font-family: "Poppins SemiBold";
+}
+
+.button {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-weight: normal;
+
+}
+.choice-box{
+    -fx-font-family: "Poppins";
+}
+.choice-box .label {
+    -fx-font-family: "Poppins";
+}
+#lblTitulo {
+    -fx-font-family: "Poppins Black";
+    -fx-font-size: 58px;
+}
