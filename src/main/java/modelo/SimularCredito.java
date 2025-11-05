@@ -27,7 +27,7 @@ public class SimularCredito {
             double amortizacion = cuota - interes;
             double saldo = credito.obtenerSaldo(t);
 
-            // 🔒 Protección contra valores negativos
+            //  Protección contra valores negativos
             if (cuota < 0) cuota = 0;
             if (interes < 0) interes = 0;
             if (amortizacion < 0) amortizacion = 0;
@@ -37,9 +37,7 @@ public class SimularCredito {
             double dCapital = credito.sensibilidadRespectoCapital(t);
             double dTiempo = credito.sensibilidadRespectoTiempo(t);
 
-            ResultadoPeriodico resultado = new ResultadoPeriodico(
-                    t, cuota, interes, amortizacion, saldo, dTasa, dCapital, dTiempo
-            );
+            ResultadoPeriodico resultado = new ResultadoPeriodico(t, cuota, interes, amortizacion, saldo, dTasa, dCapital, dTiempo);
 
             resultados.add(resultado);
             saldoAnterior = saldo;

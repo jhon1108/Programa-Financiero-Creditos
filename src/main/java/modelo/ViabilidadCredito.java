@@ -42,12 +42,12 @@ public class ViabilidadCredito {
         return calcularCMP() >= calcularCuotaPromedio();
     }
 
-    // Evaluación de viabilidad según CE (ejemplo: máximo 40%)
+    // Evaluación de viabilidad según CE
     public boolean esViablePorCE() {
         return calcularCE() <= 40;
     }
 
-    // Evaluación final (puedes ajustar la lógica combinada)
+    // Evaluación final
     public boolean esViable() {
         return esViablePorCMP() && esViablePorCE();
     }
