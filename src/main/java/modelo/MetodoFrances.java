@@ -1,4 +1,4 @@
-package main;
+package modelo;
 
 public class MetodoFrances extends MetodoAmortizacion {
 
@@ -8,23 +8,30 @@ public class MetodoFrances extends MetodoAmortizacion {
 
     @Override
     public double calcularCuota(int periodo) {
+        validarPeriodo(periodo);
         double r = tasaInteres;
         int n = numeroCuotas;
+        if (r == 0) return capital / n; // caso sin interés
         return capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
 
     @Override
     public double calcularInteres(int periodo, double saldoAnterior) {
+        validarPeriodo(periodo);
+        if (saldoAnterior < 0) throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
         return saldoAnterior * tasaInteres;
     }
 
     @Override
     public double calcularAmortizacion(int periodo, double cuota, double interes) {
+        validarPeriodo(periodo);
+        if (cuota < 0 || interes < 0) throw new IllegalArgumentException("Cuota e interés deben ser positivos.");
         return cuota - interes;
     }
 
     @Override
     public double calcularSaldo(int periodo) {
+        validarPeriodo(periodo);
         double cuota = calcularCuota(periodo);
         double saldo = capital;
         for (int t = 1; t <= periodo; t++) {
@@ -35,10 +42,9 @@ public class MetodoFrances extends MetodoAmortizacion {
         return saldo;
     }
 
-    // Derivadas simbólicas (sensibilidad)
-
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
+        validarPeriodo(periodo);
         double cuota = calcularCuota(periodo);
         double saldo = capital;
         double derivada = 0;
@@ -46,13 +52,14 @@ public class MetodoFrances extends MetodoAmortizacion {
             double interes = saldo * tasaInteres;
             double amortizacion = cuota - interes;
             saldo -= amortizacion;
-            derivada += -saldo * t; // aproximación simbólica
+            derivada += -saldo * t;
         }
         return derivada;
     }
 
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
+        validarPeriodo(periodo);
         double cuota = calcularCuota(periodo);
         double saldo = capital;
         double derivada = 0;
@@ -60,14 +67,14 @@ public class MetodoFrances extends MetodoAmortizacion {
             double interes = saldo * tasaInteres;
             double amortizacion = cuota - interes;
             saldo -= amortizacion;
-            derivada += -tasaInteres * saldo; // aproximación simbólica
+            derivada += -tasaInteres * saldo;
         }
         return derivada;
     }
 
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
-        // Aproximación: cómo cambia el saldo si el capital inicial varía
+        validarPeriodo(periodo);
         double delta = 0.0001;
         double originalCapital = capital;
 
@@ -78,7 +85,12 @@ public class MetodoFrances extends MetodoAmortizacion {
         double saldoMinus = calcularSaldo(periodo);
 
         capital = originalCapital;
-
         return (saldoPlus - saldoMinus) / (2 * delta);
+    }
+
+    private void validarPeriodo(int periodo) {
+        if (periodo < 1 || periodo > numeroCuotas) {
+            throw new IllegalArgumentException("El periodo debe estar entre 1 y " + numeroCuotas);
+        }
     }
 }

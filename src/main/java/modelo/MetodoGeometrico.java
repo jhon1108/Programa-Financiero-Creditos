@@ -1,5 +1,4 @@
-package main;
-
+package modelo;
 
 public class MetodoGeometrico extends MetodoAmortizacion {
 
@@ -9,49 +8,57 @@ public class MetodoGeometrico extends MetodoAmortizacion {
     public MetodoGeometrico(double capital, double tasaInteres, int numeroCuotas,
                             double cuotaInicial, double factorCrecimiento) {
         super(capital, tasaInteres, numeroCuotas);
-
         if (cuotaInicial <= 0 || factorCrecimiento <= 0) {
             throw new IllegalArgumentException("La cuota inicial y el factor de crecimiento deben ser mayores que cero.");
         }
-
         this.cuotaInicial = cuotaInicial;
         this.factorCrecimiento = factorCrecimiento;
     }
 
-
     @Override
     public double calcularCuota(int periodo) {
+        validarPeriodo(periodo);
         return cuotaInicial * Math.pow(factorCrecimiento, periodo - 1);
     }
 
-
     @Override
     public double calcularInteres(int periodo, double saldoAnterior) {
+        validarPeriodo(periodo);
+        if (saldoAnterior < 0) throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
         return tasaInteres * saldoAnterior;
     }
 
     @Override
     public double calcularAmortizacion(int periodo, double cuota, double interes) {
+        validarPeriodo(periodo);
+        if (cuota < 0 || interes < 0) throw new IllegalArgumentException("Cuota e interés deben ser positivos.");
         return cuota - interes;
     }
 
-    //Calcula el saldo restante después de cierto periodo
     @Override
     public double calcularSaldo(int periodo) {
+        validarPeriodo(periodo);
         double saldo = capital;
+
         for (int t = 1; t <= periodo; t++) {
             double cuota = calcularCuota(t);
             double interes = calcularInteres(t, saldo);
             double amortizacion = calcularAmortizacion(t, cuota, interes);
+
+            // Evitamos amortización negativa
+            if (amortizacion < 0) amortizacion = 0;
+
             saldo -= amortizacion;
+
+            // Evitamos saldo negativo
+            if (saldo < 0) saldo = 0;
         }
+
         return saldo;
     }
-
-    //Derivada numérica del saldo respecto al capital inicial
-
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
+        validarPeriodo(periodo);
         double delta = 0.0001;
         double originalCapital = capital;
 
@@ -65,10 +72,9 @@ public class MetodoGeometrico extends MetodoAmortizacion {
         return (saldoPlus - saldoMinus) / (2 * delta);
     }
 
-    //Derivada numérica del saldo respecto a la tasa de interés
-
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
+        validarPeriodo(periodo);
         double delta = 0.0001;
         double originalTasa = tasaInteres;
 
@@ -82,33 +88,18 @@ public class MetodoGeometrico extends MetodoAmortizacion {
         return (saldoPlus - saldoMinus) / (2 * delta);
     }
 
-    //Derivada del saldo respecto al tiempo (diferencia entre periodos)
-
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
-        if (periodo <= 1) return 0.0;
+        validarPeriodo(periodo);
+        if (periodo == 1) return calcularSaldo(1);
         double saldoActual = calcularSaldo(periodo);
         double saldoAnterior = calcularSaldo(periodo - 1);
         return saldoActual - saldoAnterior;
     }
 
-    //Calcula todas las cuotas en un arreglo
-
-    public double[] calcularTodasLasCuotas() {
-        double[] cuotas = new double[numeroCuotas];
-        for (int i = 0; i < numeroCuotas; i++) {
-            cuotas[i] = calcularCuota(i + 1);
+    private void validarPeriodo(int periodo) {
+        if (periodo < 1 || periodo > numeroCuotas) {
+            throw new IllegalArgumentException("El periodo debe estar entre 1 y " + numeroCuotas);
         }
-        return cuotas;
-    }
-
-    //Calcula la cuota promedio del crédito.
-
-    public double calcularCuotaPromedio() {
-        double suma = 0;
-        for (int i = 1; i <= numeroCuotas; i++) {
-            suma += calcularCuota(i);
-        }
-        return suma / numeroCuotas;
     }
 }
