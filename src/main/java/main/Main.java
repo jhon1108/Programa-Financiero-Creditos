@@ -20,6 +20,7 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA1), 1);
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA2), 1);
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA3), 1);
+        Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA4), 1);
         BorderPane pane = loader.load();
         Scene scene = new Scene(pane);
         scene.getStylesheets().add(getClass().getResource(Rutas.ESTILOS).toExternalForm());

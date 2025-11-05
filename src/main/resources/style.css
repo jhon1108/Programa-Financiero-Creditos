@@ -23,3 +23,9 @@
     -fx-font-family: "Poppins Black";
     -fx-font-size: 58px;
 }
+.label-cuerpo {
+    -fx-font-family: "Poppins Light";
+}
+.label-titulo {
+    -fx-font-family: "Poppins Black";
+}

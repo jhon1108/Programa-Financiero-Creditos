@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -149,13 +155,46 @@
                                  <children>
                                     <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="44.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
                                     <Rectangle fill="#0c2937" height="17.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-                                    <Label layoutX="14.0" layoutY="9.0" prefHeight="27.0" prefWidth="254.0" text="Viabilidad Financiera" textFill="WHITE">
+                                    <Label layoutX="14.0" layoutY="11.0" prefHeight="27.0" prefWidth="254.0" text="Viabilidad Financiera" textFill="WHITE">
                                        <font>
                                           <Font name="Poppins SemiBold" size="13.0" />
                                        </font>
                                     </Label>
+                                    <ImageView fitHeight="31.0" fitWidth="30.0" layoutX="160.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@image-removebg-preview%20(3).png" />
+                                       </image>
+                                       <effect>
+                                          <Bloom threshold="0.61" />
+                                       </effect>
+                                    </ImageView>
+                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="40.0" layoutX="7.0" layoutY="108.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="185.0" />
+                                    <Label layoutX="4.0" layoutY="29.0" prefHeight="75.0" prefWidth="193.0" styleClass="label-cuerpo" text="A partir de los datos ingresados, sus capacidades como prestamista son:" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="10.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="12.0" layoutY="86.0" prefHeight="22.0" prefWidth="186.0" styleClass="label-titulo" text="Capacidad de endeudamiento" textFill="#f2e787" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Regular" size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="23.0" layoutY="116.0" prefHeight="24.0" prefWidth="52.0" styleClass="label-titulo" text="1234" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Black" size="16.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </AnchorPane>
+                              <LineChart layoutX="1.0" layoutY="-1.0" prefHeight="267.0" prefWidth="358.0">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis side="LEFT" />
+                                </yAxis>
+                              </LineChart>
+                              <Spinner layoutX="36.0" layoutY="260.0" />
                            </children></AnchorPane>
                      </center>
                   </BorderPane>
@@ -171,11 +210,11 @@
                <center>
                   <AnchorPane maxHeight="2000.0" maxWidth="2000.0" minHeight="100.0" minWidth="100.0" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label id="lblTitulo" fx:id="lblTitulo" layoutX="71.0" layoutY="9.0" text="Credit Manager">
-                           <font>
-                              <Font name="Poppins Black" size="58.0" />
-                           </font>
-                        </Label>
+                        <ImageView cache="true" cacheHint="QUALITY" fitHeight="87.0" fitWidth="88.0" layoutX="14.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@image-removebg-preview%20(7)_imgupscaler.ai_Mejorador_2K.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
                </center>
