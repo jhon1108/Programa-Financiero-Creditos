@@ -1,35 +1,39 @@
 package modelo;
 
 public class Usuario {
+
     private String nombre;
-    private double ingresos;
-    private double gastos;
+    private double ingresosFijos;
+    private double gastosFijos;
     private double deudas;
-    private double capacidadEndeudamiento;
-    private double cuotaMaxima;
+    ViabilidadFinanciera viabilidadFinanciera;
 
-    public Usuario(String nombre,double ingresos, double gastos, double deudas){
+    public Usuario(String nombre, double ingresosFijos, double gastosFijos, double deudas) {
+        this.nombre = nombre;
+        this.ingresosFijos = ingresosFijos;
+        this.gastosFijos = gastosFijos;
+        this.deudas = deudas;
+        this.viabilidadFinanciera= new ViabilidadFinanciera(this);
 
-      this.nombre=nombre;
-      this.gastos =gastos;
-      this.deudas=deudas;
-      this.ingresos= ingresos;}
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
 
     public double getIngresos() {
-        return ingresos;
+        return ingresosFijos;
     }
 
-    public String getNombre(){
-        return nombre;}
     public double getGastos() {
-        return gastos;}
-    public double getDeudas(){
-        return deudas;}
-    public double calcularCE(){
-        double ingresoDisponible =ingresos-gastos-deudas;
-        return ingresoDisponible*0.4; }
-    public double calcularCM(){
-        return calcularCE();
-    }
+        return gastosFijos;
     }
 
+    public double getDeudas() {
+        return deudas;
+    }
+
+    public ViabilidadFinanciera getViabilidadFinanciera() {
+        return viabilidadFinanciera;
+    }
+}

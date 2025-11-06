@@ -8,6 +8,8 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Bloom?>
 <?import javafx.scene.image.Image?>
@@ -15,6 +17,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
@@ -151,7 +154,7 @@
                      <center>
                         <AnchorPane minHeight="200.0" minWidth="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #081C26; -fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20;" BorderPane.alignment="CENTER">
                            <children>
-                              <AnchorPane layoutX="14.0" layoutY="346.0" prefHeight="174.0" prefWidth="200.0" style="-fx-background-color: #091f2c; -fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="547.0" AnchorPane.topAnchor="297.0">
+                              <AnchorPane id="anchorViabilidad" fx:id="anchorViabilidad" layoutX="14.0" layoutY="346.0" prefHeight="174.0" prefWidth="200.0" style="-fx-background-color: #091f2c; -fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="547.0" AnchorPane.topAnchor="297.0">
                                  <children>
                                     <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="44.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
                                     <Rectangle fill="#0c2937" height="17.0" layoutY="27.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
@@ -168,7 +171,7 @@
                                           <Bloom threshold="0.61" />
                                        </effect>
                                     </ImageView>
-                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="40.0" layoutX="7.0" layoutY="108.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="185.0" />
+                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="40.0" layoutX="6.0" layoutY="108.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
                                     <Label layoutX="4.0" layoutY="29.0" prefHeight="75.0" prefWidth="193.0" styleClass="label-cuerpo" text="A partir de los datos ingresados, sus capacidades como prestamista son:" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                        <font>
                                           <Font name="Poppins Light" size="10.0" />
@@ -179,22 +182,64 @@
                                           <Font name="Poppins Regular" size="11.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="23.0" layoutY="116.0" prefHeight="24.0" prefWidth="52.0" styleClass="label-titulo" text="1234" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                    <Label id="lblCapacidad" fx:id="lblCapacidad" layoutX="18.0" layoutY="116.0" prefHeight="24.0" prefWidth="71.0" styleClass="label-titulo" text="1234" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                                        <font>
                                           <Font name="Poppins Black" size="16.0" />
                                        </font>
                                     </Label>
+                                    <Label id="lblCapacidad" fx:id="lblProbabilidad" layoutX="84.0" layoutY="112.0" prefHeight="24.0" prefWidth="112.0" styleClass="label-cuerpo" text="Alta Probabilidad" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Regular" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="88.0" layoutY="128.0" prefHeight="14.0" prefWidth="114.0" styleClass="label-cuerpo" text="de que el banco lo apruebe" textAlignment="CENTER" textFill="#979797" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="7.0" />
+                                       </font>
+                                    </Label>
+                                    <Label contentDisplay="TOP" layoutX="27.0" layoutY="149.0" prefHeight="22.0" prefWidth="186.0" styleClass="label-titulo" text="Cuota Maxima Posible" textFill="#f2e787" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Regular" size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="23.0" layoutY="183.0" prefHeight="14.0" prefWidth="114.0" styleClass="label-cuerpo" textAlignment="CENTER" textFill="#979797" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="7.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="24.0" layoutY="167.0" prefHeight="14.0" prefWidth="178.0" styleClass="label-cuerpo" text="(el dinero que podras pagar cada periodo)" textAlignment="CENTER" textFill="#979797" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="7.0" />
+                                       </font>
+                                    </Label>
+                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="34.0" layoutX="6.0" layoutY="183.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="192.0" />
+                                    <Label id="lblCapacidad" fx:id="lblCapacidadMaxima" layoutX="22.0" layoutY="188.0" prefHeight="24.0" prefWidth="158.0" styleClass="label-titulo" text="1234" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Black" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Rectangle fx:id="rctViabilidad" arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="223.0" layoutX="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
                                  </children>
                               </AnchorPane>
-                              <LineChart layoutX="1.0" layoutY="-1.0" prefHeight="267.0" prefWidth="358.0">
-                                <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
-                                </xAxis>
-                                <yAxis>
-                                  <NumberAxis side="LEFT" />
-                                </yAxis>
-                              </LineChart>
-                              <Spinner layoutX="36.0" layoutY="260.0" />
+                              <Spinner layoutX="594.0" layoutY="230.0" />
+                              <StackPane layoutX="221.0" layoutY="262.0" prefHeight="257.0" prefWidth="527.0" style="-fx-padding: 10; -fx-background-radius: 20; -fx-background-color: white;">
+                                 <children>
+                                    <LineChart prefHeight="233.0" prefWidth="379.0">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis side="LEFT" />
+                                      </yAxis>
+                                    </LineChart>
+                                 </children>
+                              </StackPane>
+                              <TableView layoutX="221.0" layoutY="14.0" prefHeight="238.0" prefWidth="361.0" style="-fx-background-color: #0c2937;">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
                            </children></AnchorPane>
                      </center>
                   </BorderPane>
