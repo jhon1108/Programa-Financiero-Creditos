@@ -25,5 +25,22 @@ public abstract class MetodoAmortizacion {
     public abstract double derivadaSaldoRespectoTasa(int periodo);
     public abstract double derivadaSaldoRespectoCapital(int periodo);
     public abstract double derivadaSaldoRespectoTiempo(int periodo);
+    public PeriodoCredito obtenerSensibilidadFinal() {
+        int T = numeroCuotas;
+        double saldo = calcularSaldo(T);
+        double cuota = calcularCuota(T);
+        double interes = calcularInteres(T, calcularSaldo(T - 1));
+        double amortizacion = cuota - interes;
+
+        double dTasa    = derivadaSaldoRespectoTasa(T);
+        double dCapital = derivadaSaldoRespectoCapital(T);
+        double dTiempo  = derivadaSaldoRespectoTiempo(T);
+
+        return new PeriodoCredito(
+                T, cuota, interes, amortizacion, saldo,
+                dTasa, dCapital, dTiempo
+        );
+    }
+
 }
 

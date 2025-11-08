@@ -3,54 +3,35 @@ package modelo;
 public class Usuario {
 
     private String nombre;
-    private double ingresosFijos;
-    private double gastosFijos;
+    private double ingresos;
+    private double gastos;
     private double deudas;
+    private ViabilidadFinanciera viabilidad;
 
-    public Usuario(String nombre, double ingresosFijos, double gastosFijos, double deudas) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-        if (ingresosFijos < 0 || gastosFijos < 0 || deudas < 0) {
-            throw new IllegalArgumentException("Los valores financieros no pueden ser negativos.");
-        }
+    public Usuario(String nombre, double ingresos, double gastos, double deudas) {
         this.nombre = nombre;
-        this.ingresosFijos = ingresosFijos;
-        this.gastosFijos = gastosFijos;
+        this.ingresos = ingresos;
+        this.gastos = gastos;
         this.deudas = deudas;
+
+        // Genera viabilidad al crear el usuario
+        this.viabilidad = new ViabilidadFinanciera(this);
     }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
+    public double getIngresos() { return ingresos; }
+    public double getGastos() { return gastos; }
+    public double getDeudas() { return deudas; }
+    public ViabilidadFinanciera getViabilidad() { return viabilidad; }
 
-    public double getIngresos() {
-        return ingresosFijos;
-    }
-
-    public double getGastos() {
-        return gastosFijos;
-    }
-
-    public double getDeudas() {
-        return deudas;
-    }
-
-    public double capacidadMensual() {
-        return ingresosFijos - gastosFijos - deudas;
-    }
-
-    public boolean puedePagar(double cuota) {
-        if (cuota < 0) {
-            throw new IllegalArgumentException("La cuota no puede ser negativa.");
-        }
-        return capacidadMensual() >= cuota;
-    }
-
-    public String resumenFinanciero() {
+    @Override
+    public String toString() {
         return String.format(
-                "Usuario: %s\nIngresos: %.2f\nGastos: %.2f\nDeudas: %.2f\nCapacidad mensual disponible: %.2f",
-                nombre, ingresosFijos, gastosFijos, deudas, capacidadMensual()
+                "Usuario: %s\nIngresos: %.2f\nGastos: %.2f\nDeudas: %.2f\nCE: %.2f%%\nCMP: %.2f\nRango: %s",
+                nombre, ingresos, gastos, deudas,
+                viabilidad.getCe(),
+                viabilidad.getCmp(),
+                viabilidad.getRango()
         );
     }
 }

@@ -1,0 +1,36 @@
+package modelo;
+
+public class ViabilidadFinanciera {
+
+    private Double ce;     // Coeficiente de Endeudamiento
+    private Double cmp;    // Capacidad Mensual de Pago
+    private String rango;  // Rango interpretativo
+
+    public ViabilidadFinanciera(Usuario usuario) {
+
+        double ingresos = usuario.getIngresos();
+        double gastos   = usuario.getGastos();
+        double deudas   = usuario.getDeudas();
+
+        // CMP = ingresos - gastos - deudas
+        this.cmp = ingresos - gastos - deudas;
+
+        // CE = ((gastos + deudas) / ingresos) * 100
+        this.ce = ingresos == 0 ? 100.0 : ((gastos + deudas) / ingresos) * 100.0;
+
+        // Clasificación
+        if (ce <= 30) {
+            this.rango = "Excelente";
+        } else if (ce <= 40) {
+            this.rango = "Aceptable";
+        } else if (ce <= 60) {
+            this.rango = "Riesgoso";
+        } else {
+            this.rango = "No viable";
+        }
+    }
+
+    public Double getCe() { return ce; }
+    public Double getCmp() { return cmp; }
+    public String getRango() { return rango; }
+}

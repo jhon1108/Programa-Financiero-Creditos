@@ -2,71 +2,50 @@ package modelo;
 
 public class Credito {
 
+    private Usuario usuario;
     private MetodoAmortizacion metodo;
 
-    public Credito(MetodoAmortizacion metodo) {
-        if (metodo == null) {
-            throw new IllegalArgumentException("El método de amortización no puede ser nulo.");
-        }
+
+    public Credito(Usuario usuario, MetodoAmortizacion metodo) {
+        this.usuario = usuario;
         this.metodo = metodo;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
     public MetodoAmortizacion getMetodoAmortizacion() {
         return metodo;
     }
 
-    public void setMetodoAmortizacion(MetodoAmortizacion metodo) {
-        if (metodo == null) {
-            throw new IllegalArgumentException("El método de amortización no puede ser nulo.");
-        }
-        this.metodo = metodo;
-    }
 
-    public double obtenerCuota(int periodo) {
-        validarPeriodo(periodo);
+    public double calcularCuota(int periodo) {
         return metodo.calcularCuota(periodo);
     }
 
-    public double obtenerSaldo(int periodo) {
-        validarPeriodo(periodo);
+    public double calcularSaldo(int periodo) {
         return metodo.calcularSaldo(periodo);
     }
 
-    public double sensibilidadRespectoCapital(int periodo) {
-        validarPeriodo(periodo);
-        return metodo.derivadaSaldoRespectoCapital(periodo);
-    }
-
-    public double sensibilidadRespectoTasa(int periodo) {
-        validarPeriodo(periodo);
-        return metodo.derivadaSaldoRespectoTasa(periodo);
-    }
-
-    public double sensibilidadRespectoTiempo(int periodo) {
-        validarPeriodo(periodo);
-        return metodo.derivadaSaldoRespectoTiempo(periodo);
-    }
-
-    public double obtenerInteres(int periodo, double saldoAnterior) {
-        validarPeriodo(periodo);
-        if (saldoAnterior < 0) {
-            throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
-        }
+    public double calcularInteres(int periodo, double saldoAnterior) {
         return metodo.calcularInteres(periodo, saldoAnterior);
     }
 
-    public double obtenerAmortizacion(int periodo, double cuota, double interes) {
-        validarPeriodo(periodo);
-        if (cuota < 0 || interes < 0) {
-            throw new IllegalArgumentException("La cuota y el interés no pueden ser negativos.");
-        }
+    public double calcularAmortizacion(int periodo, double cuota, double interes) {
         return metodo.calcularAmortizacion(periodo, cuota, interes);
     }
 
-    private void validarPeriodo(int periodo) {
-        if (periodo < 1) {
-            throw new IllegalArgumentException("El periodo debe ser mayor o igual a 1.");
-        }
+    // Sensibilidad
+    public double sensibilidadRespectoTasa(int periodo) {
+        return metodo.derivadaSaldoRespectoTasa(periodo);
+    }
+
+    public double sensibilidadRespectoCapital(int periodo) {
+        return metodo.derivadaSaldoRespectoCapital(periodo);
+    }
+
+    public double sensibilidadRespectoTiempo(int periodo) {
+        return metodo.derivadaSaldoRespectoTiempo(periodo);
     }
 }
-
