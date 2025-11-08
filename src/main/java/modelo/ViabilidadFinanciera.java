@@ -2,9 +2,9 @@ package modelo;
 
 public class ViabilidadFinanciera {
 
-    private Double ce;     // Coeficiente de Endeudamiento
-    private Double cmp;    // Capacidad Mensual de Pago
-    private String rango;  // Rango interpretativo
+    private Double ce;
+    private Double cmp;
+    private String rango;
 
     public ViabilidadFinanciera(Usuario usuario) {
 
