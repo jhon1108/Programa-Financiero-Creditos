@@ -14,7 +14,7 @@ public class Usuario {
         this.gastos = gastos;
         this.deudas = deudas;
 
-        // Genera viabilidad al crear el usuario
+
         this.viabilidad = new ViabilidadFinanciera(this);
     }
 

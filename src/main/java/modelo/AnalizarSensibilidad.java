@@ -14,14 +14,14 @@ public class AnalizarSensibilidad {
         int T = m.getNumeroCuotas();
 
         double a_t = m.calcular_a_t(T);
-        double A_t = m.calcular_A_t(T);
+        double A_t= m.calcular_A_t(T);
         double I_t = m.calcular_I_t(T);
         double S_t = m.calcular_S_t(T);
 
-        double a_t_p   = m.derivada_a_t(T);
-        double A_t_p   = m.derivada_A_t(T);
-        double I_t_p   = m.derivada_I_t(T);
-        double S_t_p   = m.derivada_S_t(T);
+        double a_t_p = m.derivada_a_t(T);
+        double A_t_p = m.derivada_A_t(T);
+        double I_t_p = m.derivada_I_t(T);
+        double S_t_p= m.derivada_S_t(T);
 
         double dTasa     = m.derivadaSaldoRespectoTasa(T);
         double dCapital  = m.derivadaSaldoRespectoCapital(T);

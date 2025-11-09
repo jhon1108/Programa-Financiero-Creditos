@@ -67,9 +67,7 @@ public class MetodoFrances extends MetodoAmortizacion {
     }
 
 
-    // =========================================================
-    // derivadas a(t), A(t), I(t), S(t)
-    // =========================================================
+
 
     @Override
     public double derivada_a_t(int periodo) {
@@ -96,13 +94,11 @@ public class MetodoFrances extends MetodoAmortizacion {
     }
 
 
-    // =========================================================
-    // Sensibilidad saldo
-    // =========================================================
+
 
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
-        // Numérica
+
         double delta = 1e-4;
         double orig = tasaInteres;
 

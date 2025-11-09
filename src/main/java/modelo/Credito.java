@@ -5,7 +5,6 @@ public class Credito {
     private Usuario usuario;
     private MetodoAmortizacion metodo;
 
-
     public Credito(Usuario usuario, MetodoAmortizacion metodo) {
         this.usuario = usuario;
         this.metodo = metodo;
@@ -20,20 +19,37 @@ public class Credito {
     }
 
 
-    public double calcularCuota(int periodo) {
-        return metodo.calcularCuota(periodo);
+    public double calcularAmortizacionPeriodo(int periodo) {
+        return metodo.calcular_a_t(periodo);
     }
 
-    public double calcularSaldo(int periodo) {
-        return metodo.calcularSaldo(periodo);
+    public double calcularAmortizacionAcumulada(int periodo) {
+        return metodo.calcular_A_t(periodo);
     }
 
-    public double calcularInteres(int periodo, double saldoAnterior) {
-        return metodo.calcularInteres(periodo, saldoAnterior);
+    public double calcularInteresPeriodo(int periodo) {
+        return metodo.calcular_I_t(periodo);
     }
 
-    public double calcularAmortizacion(int periodo, double cuota, double interes) {
-        return metodo.calcularAmortizacion(periodo, cuota, interes);
+    public double calcularSaldoPeriodo(int periodo) {
+        return metodo.calcular_S_t(periodo);
+    }
+
+
+    public double derivadaAmortizacion(int periodo) {
+        return metodo.derivada_a_t(periodo);
+    }
+
+    public double derivadaAmortizacionAcumulada(int periodo) {
+        return metodo.derivada_A_t(periodo);
+    }
+
+    public double derivadaInteres(int periodo) {
+        return metodo.derivada_I_t(periodo);
+    }
+
+    public double derivadaSaldo(int periodo) {
+        return metodo.derivada_S_t(periodo);
     }
 
 
