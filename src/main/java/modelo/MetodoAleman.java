@@ -8,10 +8,10 @@ public class MetodoAleman extends MetodoAmortizacion {
 
     @Override
     public double calcularCuota(int periodo) {
-        double amortizacion = capital / numeroCuotas;
-        double saldo = capital - amortizacion * periodo;
+        double amort = capital / numeroCuotas;
+        double saldo = capital - amort * (periodo - 1);
         double interes = tasaInteres * saldo;
-        return amortizacion + interes;
+        return amort + interes;
     }
 
     @Override
@@ -26,9 +26,54 @@ public class MetodoAleman extends MetodoAmortizacion {
 
     @Override
     public double calcularSaldo(int periodo) {
-        double amortizacion = capital / numeroCuotas;
-        return capital - amortizacion * periodo;
+        double amort = capital / numeroCuotas;
+        return Math.max(capital - amort * periodo, 0);
     }
+
+
+    @Override
+    public double calcular_a_t(int periodo) {
+        return capital / numeroCuotas;
+    }
+
+    @Override
+    public double calcular_A_t(int periodo) {
+        return (capital / numeroCuotas) * periodo;
+    }
+
+    @Override
+    public double calcular_I_t(int periodo) {
+        return calcularInteres(periodo, calcularSaldo(periodo - 1));
+    }
+
+    @Override
+    public double calcular_S_t(int periodo) {
+        return calcularSaldo(periodo);
+    }
+
+
+
+    @Override
+    public double derivada_a_t(int periodo) {
+        return 0;
+    }
+
+    @Override
+    public double derivada_A_t(int periodo) {
+        return capital / numeroCuotas;
+    }
+
+    @Override
+    public double derivada_I_t(int periodo) {
+        return calcular_I_t(periodo) - calcular_I_t(periodo - 1);
+    }
+
+    @Override
+    public double derivada_S_t(int periodo) {
+        return calcular_S_t(periodo) - calcular_S_t(periodo - 1);
+    }
+
+
 
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {

@@ -16,39 +16,31 @@ public class GenerarRecomendaciones {
     public List<String> obtenerRecomendaciones() {
 
         List<String> recomendaciones = new ArrayList<>();
-        MetodoAmortizacion m = credito.getMetodoAmortizacion();
-        int T = m.getNumeroCuotas();
+        PeriodoCredito pf = analizador.obtenerSensibilidadFinal();
 
-        PeriodoCredito pFinal = analizador.obtenerSensibilidadFinal();
+        double saldoFinal = pf.getS_t();
+        double dTasa      = pf.getDsdTasa();
+        double dCapital   = pf.getDsdCapital();
+        double dTiempo    = pf.getDsdTiempo();
 
-        double saldoFinal = pFinal.getSaldo();
-        double dTasa = pFinal.getDerivadaTasa();
-        double dCapital = pFinal.getDerivadaCapital();
-        double dTiempo = pFinal.getDerivadaTiempo();
-
-        // 1. Sensibilidad respecto a tasa
         if (Math.abs(dTasa) > Math.abs(dCapital) && Math.abs(dTasa) > Math.abs(dTiempo)) {
-            recomendaciones.add("Tu saldo es más sensible a cambios en la tasa de interés. Considera refinanciar si las tasas bajan.");
+            recomendaciones.add(" El saldo es muy sensible a variaciones en la tasa → considerar refinanciación.");
         }
 
-        // 2. Sensibilidad respecto a capital
         if (Math.abs(dCapital) > Math.abs(dTasa) && Math.abs(dCapital) > Math.abs(dTiempo)) {
-            recomendaciones.add("Aumentar el pago inicial reduciría significativamente tu deuda futura.");
+            recomendaciones.add("Aumentar el capital inicial reduciría significativamente la deuda futura.");
         }
 
-        // 3. Abonos adicionales
         if (dTiempo < 0) {
-            recomendaciones.add("Realizar pagos adicionales podría reducir el tiempo total del crédito.");
+            recomendaciones.add(" Abonos adelantados reducen el tiempo total del crédito.");
         }
 
-        // 4. Si queda saldo alto al final
         if (saldoFinal > credito.getMetodoAmortizacion().getCapital() * 0.3) {
-            recomendaciones.add("El saldo restante es elevado. Se recomienda evaluar mejores condiciones.");
+            recomendaciones.add(" El saldo final es alto → buscar mejores condiciones.");
         }
 
-        // Si no se generó ninguna recomendación
         if (recomendaciones.isEmpty()) {
-            recomendaciones.add("El crédito se encuentra en condiciones estables. No se recomiendan cambios.");
+            recomendaciones.add("Crédito estable. No se recomiendan cambios.");
         }
 
         return recomendaciones;

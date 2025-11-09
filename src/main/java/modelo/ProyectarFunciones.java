@@ -3,6 +3,7 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ProyectarFunciones {
 
     private final Credito credito;
@@ -18,65 +19,33 @@ public class ProyectarFunciones {
     }
 
     private List<PeriodoCredito> generarTabla() {
-
         List<PeriodoCredito> lista = new ArrayList<>();
+        MetodoAmortizacion m = credito.getMetodoAmortizacion();
+        int n = m.getNumeroCuotas();
 
-        MetodoAmortizacion metodo = credito.getMetodoAmortizacion();
+        double dS_dTasa_T = m.derivadaSaldoRespectoTasa(n);
+        double dS_dCapital_T = m.derivadaSaldoRespectoCapital(n);
+        double dS_dTiempo_T = m.derivadaSaldoRespectoTiempo(n);
 
-        double saldoAnterior = metodo.getCapital();
-        int n = metodo.getNumeroCuotas();
+        for (int t = 1; t <= n; t++) {
 
-        for (int periodo = 1; periodo <= n; periodo++) {
+            double a_t = m.calcular_a_t(t);
+            double A_t = m.calcular_A_t(t);
+            double I_t = m.calcular_I_t(t);
+            double S_t = m.calcular_S_t(t);
 
-            double cuota = metodo.calcularCuota(periodo);
-            double interes = metodo.calcularInteres(periodo, saldoAnterior);
-            double amortizacion = metodo.calcularAmortizacion(periodo, cuota, interes);
-            double saldo = metodo.calcularSaldo(periodo);
 
-            double dTasa = metodo.derivadaSaldoRespectoTasa(periodo);
-            double dCapital = metodo.derivadaSaldoRespectoCapital(periodo);
-            double dTiempo = metodo.derivadaSaldoRespectoTiempo(periodo);
+            double a_t_p = m.derivada_a_t(t);
+            double A_t_p = m.derivada_A_t(t);
+            double I_t_p = m.derivada_I_t(t);
+            double S_t_p = m.derivada_S_t(t);
 
-            PeriodoCredito p = new PeriodoCredito(
-                    periodo,
-                    cuota,
-                    interes,
-                    amortizacion,
-                    saldo,
-                    dTasa,
-                    dCapital,
-                    dTiempo
+
+            PeriodoCredito p = new PeriodoCredito(t, a_t, A_t, I_t, S_t, a_t_p, A_t_p, I_t_p, S_t_p, dS_dTasa_T, dS_dCapital_T, dS_dTiempo_T
             );
 
             lista.add(p);
-            saldoAnterior = saldo;
         }
-
         return lista;
-    }
-    //En que periodo decrece mas rapidamente mi deuda
-
-    public int periodoMayorReduccionDeuda() {
-
-        if (tabla.isEmpty()) {
-            return -1;
-        }
-
-        double maxReduccion = 0;
-        int periodoClave = tabla.get(0).getPeriodo();
-
-        for (int i = 1; i < tabla.size(); i++) {
-
-            double saldoAnterior = tabla.get(i - 1).getSaldo();
-            double saldoActual = tabla.get(i).getSaldo();
-            double reduccion = saldoAnterior - saldoActual;
-
-            if (reduccion > maxReduccion) {
-                maxReduccion = reduccion;
-                periodoClave = tabla.get(i).getPeriodo();
-            }
-        }
-
-        return periodoClave;
     }
 }

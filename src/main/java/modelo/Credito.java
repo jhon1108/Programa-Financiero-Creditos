@@ -36,7 +36,7 @@ public class Credito {
         return metodo.calcularAmortizacion(periodo, cuota, interes);
     }
 
-    // Sensibilidad
+
     public double sensibilidadRespectoTasa(int periodo) {
         return metodo.derivadaSaldoRespectoTasa(periodo);
     }

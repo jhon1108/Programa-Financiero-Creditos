@@ -12,13 +12,13 @@ public class ViabilidadFinanciera {
         double gastos   = usuario.getGastos();
         double deudas   = usuario.getDeudas();
 
-        // CMP = ingresos - gastos - deudas
+
         this.cmp = ingresos - gastos - deudas;
 
-        // CE = ((gastos + deudas) / ingresos) * 100
+
         this.ce = ingresos == 0 ? 100.0 : ((gastos + deudas) / ingresos) * 100.0;
 
-        // Clasificación
+
         if (ce <= 30) {
             this.rango = "Excelente";
         } else if (ce <= 40) {

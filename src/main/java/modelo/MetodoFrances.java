@@ -11,6 +11,7 @@ public class MetodoFrances extends MetodoAmortizacion {
         double r = tasaInteres;
         int n = numeroCuotas;
         if (r == 0) return capital / n;
+
         return capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     }
 
@@ -28,54 +29,113 @@ public class MetodoFrances extends MetodoAmortizacion {
     public double calcularSaldo(int periodo) {
         double cuota = calcularCuota(periodo);
         double saldo = capital;
+
         for (int t = 1; t <= periodo; t++) {
             double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
+            saldo -= (cuota - interes);
         }
-        return saldo;
+
+        return Math.max(saldo, 0);
     }
+
+
+
+
+    @Override
+    public double calcular_a_t(int periodo) {
+        double interes = calcular_I_t(periodo);
+        double cuota = calcularCuota(periodo);
+        return cuota - interes;
+    }
+
+    @Override
+    public double calcular_A_t(int periodo) {
+        double suma = 0;
+        for (int t = 1; t <= periodo; t++)
+            suma += calcular_a_t(t);
+        return suma;
+    }
+
+    @Override
+    public double calcular_I_t(int periodo) {
+        return calcularInteres(periodo, calcularSaldo(periodo - 1));
+    }
+
+    @Override
+    public double calcular_S_t(int periodo) {
+        return calcularSaldo(periodo);
+    }
+
+
+    // =========================================================
+    // derivadas a(t), A(t), I(t), S(t)
+    // =========================================================
+
+    @Override
+    public double derivada_a_t(int periodo) {
+        if (periodo == 1) return calcular_a_t(1);
+        return calcular_a_t(periodo) - calcular_a_t(periodo - 1);
+    }
+
+    @Override
+    public double derivada_A_t(int periodo) {
+        if (periodo == 1) return calcular_A_t(1);
+        return calcular_A_t(periodo) - calcular_A_t(periodo - 1);
+    }
+
+    @Override
+    public double derivada_I_t(int periodo) {
+        if (periodo == 1) return calcular_I_t(1);
+        return calcular_I_t(periodo) - calcular_I_t(periodo - 1);
+    }
+
+    @Override
+    public double derivada_S_t(int periodo) {
+        if (periodo == 1) return calcular_S_t(1);
+        return calcular_S_t(periodo) - calcular_S_t(periodo - 1);
+    }
+
+
+    // =========================================================
+    // Sensibilidad saldo
+    // =========================================================
 
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
-        double cuota = calcularCuota(periodo);
-        double saldo = capital;
-        double derivada = 0;
-        for (int t = 1; t <= periodo; t++) {
-            double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-            derivada += -saldo * t;
-        }
-        return derivada;
+        // Numérica
+        double delta = 1e-4;
+        double orig = tasaInteres;
+
+        tasaInteres = orig + delta;
+        double plus = calcularSaldo(periodo);
+
+        tasaInteres = orig - delta;
+        double minus = calcularSaldo(periodo);
+
+        tasaInteres = orig;
+        return (plus - minus) / (2 * delta);
     }
+
 
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
-        double cuota = calcularCuota(periodo);
-        double saldo = capital;
-        double derivada = 0;
-        for (int t = 1; t <= periodo; t++) {
-            double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-            derivada += -tasaInteres * saldo;
-        }
-        return derivada;
+        if (periodo == 1) return calcularSaldo(1);
+        return calcularSaldo(periodo) - calcularSaldo(periodo - 1);
     }
+
 
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
-        double delta = 0.0001;
-        double originalCapital = capital;
+        double delta = 1e-4;
+        double orig = capital;
 
-        capital = originalCapital + delta;
-        double saldoPlus = calcularSaldo(periodo);
+        capital = orig + delta;
+        double plus = calcularSaldo(periodo);
 
-        capital = originalCapital - delta;
-        double saldoMinus = calcularSaldo(periodo);
+        capital = orig - delta;
+        double minus = calcularSaldo(periodo);
 
-        capital = originalCapital;
-        return (saldoPlus - saldoMinus) / (2 * delta);
+        capital = orig;
+        return (plus - minus) / (2 * delta);
     }
 }
