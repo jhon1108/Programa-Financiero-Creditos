@@ -3,7 +3,6 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ProyectarFunciones {
 
     private final Credito credito;
@@ -20,32 +19,34 @@ public class ProyectarFunciones {
 
     private List<PeriodoCredito> generarTabla() {
         List<PeriodoCredito> lista = new ArrayList<>();
-        MetodoAmortizacion m = credito.getMetodoAmortizacion();
-        int n = m.getNumeroCuotas();
+        int n = credito.getMetodoAmortizacion().getNumeroCuotas();
 
-        double dS_dTasa_T = m.derivadaSaldoRespectoTasa(n);
-        double dS_dCapital_T = m.derivadaSaldoRespectoCapital(n);
-        double dS_dTiempo_T = m.derivadaSaldoRespectoTiempo(n);
+
+        double dS_dTasa_T = credito.sensibilidadRespectoTasa(n);
+        double dS_dCapital_T = credito.sensibilidadRespectoCapital(n);
+        double dS_dTiempo_T = credito.sensibilidadRespectoTiempo(n);
 
         for (int t = 1; t <= n; t++) {
 
-            double a_t = m.calcular_a_t(t);
-            double A_t = m.calcular_A_t(t);
-            double I_t = m.calcular_I_t(t);
-            double S_t = m.calcular_S_t(t);
+
+            double a_t = credito.calcularAmortizacionPeriodo(t);
+            double A_t = credito.calcularAmortizacionAcumulada(t);
+            double I_t = credito.calcularInteresPeriodo(t);
+            double S_t = credito.calcularSaldoPeriodo(t);
 
 
-            double a_t_p = m.derivada_a_t(t);
-            double A_t_p = m.derivada_A_t(t);
-            double I_t_p = m.derivada_I_t(t);
-            double S_t_p = m.derivada_S_t(t);
+            double a_t_p = credito.derivadaAmortizacion(t);
+            double A_t_p = credito.derivadaAmortizacionAcumulada(t);
+            double I_t_p = credito.derivadaInteres(t);
+            double S_t_p = credito.derivadaSaldo(t);
 
-
-            PeriodoCredito p = new PeriodoCredito(t, a_t, A_t, I_t, S_t, a_t_p, A_t_p, I_t_p, S_t_p, dS_dTasa_T, dS_dCapital_T, dS_dTiempo_T
+            PeriodoCredito p = new PeriodoCredito(t, a_t, A_t, I_t, S_t, a_t_p, A_t_p, I_t_p, S_t_p,
+                    dS_dTasa_T, dS_dCapital_T, dS_dTiempo_T
             );
 
             lista.add(p);
         }
+
         return lista;
     }
 }
