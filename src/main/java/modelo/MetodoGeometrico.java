@@ -6,100 +6,105 @@ public class MetodoGeometrico extends MetodoAmortizacion {
     private double factorCrecimiento;
 
     public MetodoGeometrico(double capital, double tasaInteres, int numeroCuotas,
-                            double cuotaInicial, double factorCrecimiento) {
+                            double factorCrecimiento) {
         super(capital, tasaInteres, numeroCuotas);
-        if (cuotaInicial <= 0 || factorCrecimiento <= 0) {
-            throw new IllegalArgumentException("La cuota inicial y el factor de crecimiento deben ser mayores que cero.");
-        }
-        this.cuotaInicial = cuotaInicial;
         this.factorCrecimiento = factorCrecimiento;
+        this.cuotaInicial = capital * (1 - factorCrecimiento) / (1 - Math.pow(factorCrecimiento, numeroCuotas));
     }
 
     @Override
-    public double calcularCuota(int periodo) {
-        validarPeriodo(periodo);
-        return cuotaInicial * Math.pow(factorCrecimiento, periodo - 1);
+    public double calcular_a_t(int periodo) {
+        // Cuota total mensual = amortización + interés
+        double capitalAmortizado = calcular_A_t(periodo);
+        double interes = calcular_I_t(periodo);
+        return redondear(capitalAmortizado + interes);
     }
 
     @Override
-    public double calcularInteres(int periodo, double saldoAnterior) {
-        validarPeriodo(periodo);
-        if (saldoAnterior < 0) throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
-        return tasaInteres * saldoAnterior;
+    public double calcular_I_t(int periodo) {
+        // Interés = saldo anterior * tasa
+        double saldoAnterior = (periodo == 1) ? capital : calcular_S_t(periodo - 1);
+        return redondear(saldoAnterior * tasaInteres);
     }
 
     @Override
-    public double calcularAmortizacion(int periodo, double cuota, double interes) {
-        validarPeriodo(periodo);
-        if (cuota < 0 || interes < 0) throw new IllegalArgumentException("Cuota e interés deben ser positivos.");
-        return cuota - interes;
+    public double calcular_A_t(int periodo) {
+        // Amortización del capital geométrica decreciente
+        return redondear(cuotaInicial * Math.pow(factorCrecimiento, periodo - 1));
     }
 
     @Override
-    public double calcularSaldo(int periodo) {
-        validarPeriodo(periodo);
+    public double calcular_S_t(int periodo) {
+        // Saldo restante = capital - suma de todas las amortizaciones anteriores
         double saldo = capital;
-
         for (int t = 1; t <= periodo; t++) {
-            double cuota = calcularCuota(t);
-            double interes = calcularInteres(t, saldo);
-            double amortizacion = calcularAmortizacion(t, cuota, interes);
-
-            // Evitamos amortización negativa
-            if (amortizacion < 0) amortizacion = 0;
-
-            saldo -= amortizacion;
-
-            // Evitamos saldo negativo
+            saldo -= calcular_A_t(t);
             if (saldo < 0) saldo = 0;
         }
-
-        return saldo;
+        return redondear(saldo);
     }
+
+    // ===== DERIVADAS DISCRETAS =====
+
+    @Override
+    public double derivada_a_t(int periodo) {
+        if (periodo <= 1) return 0;
+        return redondear(calcular_a_t(periodo) - calcular_a_t(periodo - 1));
+    }
+
+    @Override
+    public double derivada_A_t(int periodo) {
+        if (periodo <= 1) return 0;
+        return redondear(calcular_A_t(periodo) - calcular_A_t(periodo - 1));
+    }
+
+    @Override
+    public double derivada_I_t(int periodo) {
+        if (periodo <= 1) return 0;
+        return redondear(calcular_I_t(periodo) - calcular_I_t(periodo - 1));
+    }
+
+    @Override
+    public double derivada_S_t(int periodo) {
+        if (periodo <= 1) return 0;
+        return redondear(calcular_S_t(periodo) - calcular_S_t(periodo - 1));
+    }
+
+    // ===== DERIVADAS PARCIALES =====
+
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
-        validarPeriodo(periodo);
-        double delta = 0.0001;
-        double originalCapital = capital;
-
-        capital = originalCapital + delta;
-        double saldoPlus = calcularSaldo(periodo);
-
-        capital = originalCapital - delta;
-        double saldoMinus = calcularSaldo(periodo);
-
-        capital = originalCapital;
-        return (saldoPlus - saldoMinus) / (2 * delta);
+        double delta = 1e-3;
+        double orig = capital;
+        capital = orig + delta;
+        double plus = calcular_S_t(periodo);
+        capital = orig - delta;
+        double minus = calcular_S_t(periodo);
+        capital = orig;
+        return (plus - minus) / (2 * delta);
     }
 
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
-        validarPeriodo(periodo);
-        double delta = 0.0001;
-        double originalTasa = tasaInteres;
-
-        tasaInteres = originalTasa + delta;
-        double saldoPlus = calcularSaldo(periodo);
-
-        tasaInteres = originalTasa - delta;
-        double saldoMinus = calcularSaldo(periodo);
-
-        tasaInteres = originalTasa;
-        return (saldoPlus - saldoMinus) / (2 * delta);
+        double delta = 1e-4;
+        double orig = tasaInteres;
+        tasaInteres = orig + delta;
+        double plus = calcular_S_t(periodo);
+        tasaInteres = orig - delta;
+        double minus = calcular_S_t(periodo);
+        tasaInteres = orig;
+        return (plus - minus) / (2 * delta);
     }
 
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
-        validarPeriodo(periodo);
-        if (periodo == 1) return calcularSaldo(1);
-        double saldoActual = calcularSaldo(periodo);
-        double saldoAnterior = calcularSaldo(periodo - 1);
-        return saldoActual - saldoAnterior;
+        if (periodo <= 1) return 0;
+        return calcular_S_t(periodo) - calcular_S_t(periodo - 1);
     }
 
-    private void validarPeriodo(int periodo) {
-        if (periodo < 1 || periodo > numeroCuotas) {
-            throw new IllegalArgumentException("El periodo debe estar entre 1 y " + numeroCuotas);
-        }
+    // ===== Utilidad =====
+    private double redondear(double x) {
+        return Math.round(x * 100.0) / 100.0;
     }
 }
+

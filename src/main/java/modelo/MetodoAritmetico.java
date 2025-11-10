@@ -2,95 +2,109 @@ package modelo;
 
 public class MetodoAritmetico extends MetodoAmortizacion {
 
-    private double cuotaBase;
-    private double incremento;
+    private double incremento; // d
+    private double primeraAmortizacion; // A1
 
-    public MetodoAritmetico(double capital, double tasaInteres, int numeroCuotas, double cuotaBase, double incremento) {
+    public MetodoAritmetico(double capital, double tasaInteres, int numeroCuotas, double incremento) {
         super(capital, tasaInteres, numeroCuotas);
-        if (cuotaBase < 0 || incremento < 0) {
-            throw new IllegalArgumentException("La cuota base y el incremento deben ser positivos.");
-        }
-        this.cuotaBase = cuotaBase;
         this.incremento = incremento;
+        this.primeraAmortizacion = calcularPrimeraAmortizacion(capital, incremento, numeroCuotas);
+    }
+
+    private double calcularPrimeraAmortizacion(double C, double d, int n) {
+        // A1 = [2C - d * n * (n - 1)] / (2n)
+        return (2 * C - d * n * (n - 1)) / (2.0 * n);
+    }
+    public double calcular_A_t(int periodo) {
+        double A_t = primeraAmortizacion + (periodo - 1) * incremento;
+        return Math.round(A_t * 100.0) / 100.0;
+    }
+
+    // Saldo insoluto al final del periodo t
+    @Override
+    public double calcular_S_t(int periodo) {
+        double S_t = capital - (periodo * (2 * primeraAmortizacion + (periodo - 1) * incremento)) / 2.0;
+        if (S_t < 0) S_t = 0;
+        return Math.round(S_t * 100.0) / 100.0;
+    }
+
+    // Interés del periodo t
+    @Override
+    public double calcular_I_t(int periodo) {
+        double saldoAnterior = (periodo == 1) ? capital : calcular_S_t(periodo - 1);
+        double I_t = saldoAnterior * tasaInteres;
+        return Math.round(I_t * 100.0) / 100.0;
+    }
+
+    // Cuota total del periodo t
+    @Override
+    public double calcular_a_t(int periodo) {
+        double a_t = calcular_A_t(periodo) + calcular_I_t(periodo);
+        return Math.round(a_t * 100.0) / 100.0;
+    }
+
+    // ===== DERIVADAS (diferencias entre periodos consecutivos) =====
+
+    @Override
+    public double derivada_a_t(int periodo) {
+        if (periodo == numeroCuotas)
+            return calcular_a_t(periodo) - calcular_a_t(periodo - 1);
+        return Math.round((calcular_a_t(periodo + 1) - calcular_a_t(periodo)) * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularCuota(int periodo) {
-        validarPeriodo(periodo);
-        return cuotaBase + incremento * periodo;
+    public double derivada_A_t(int periodo) {
+        if (periodo == numeroCuotas)
+            return calcular_A_t(periodo) - calcular_A_t(periodo - 1);
+        return Math.round((calcular_A_t(periodo + 1) - calcular_A_t(periodo)) * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularInteres(int periodo, double saldoAnterior) {
-        validarPeriodo(periodo);
-        if (saldoAnterior < 0) throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
-        return tasaInteres * saldoAnterior;
+    public double derivada_I_t(int periodo) {
+        if (periodo == numeroCuotas)
+            return calcular_I_t(periodo) - calcular_I_t(periodo - 1);
+        return Math.round((calcular_I_t(periodo + 1) - calcular_I_t(periodo)) * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularAmortizacion(int periodo, double cuota, double interes) {
-        validarPeriodo(periodo);
-        if (cuota < 0 || interes < 0) throw new IllegalArgumentException("Cuota e interés deben ser positivos.");
-        return cuota - interes;
+    public double derivada_S_t(int periodo) {
+        if (periodo == numeroCuotas)
+            return calcular_S_t(periodo) - calcular_S_t(periodo - 1);
+        return Math.round((calcular_S_t(periodo + 1) - calcular_S_t(periodo)) * 100.0) / 100.0;
     }
 
-    @Override
-    public double calcularSaldo(int periodo) {
-        validarPeriodo(periodo);
-        double saldo = capital;
-        for (int t = 1; t <= periodo; t++) {
-            double cuota = calcularCuota(t);
-            double interes = tasaInteres * saldo;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-        }
-        return saldo;
-    }
 
+
+    // === DERIVADAS PARCIALES (opcional) ===
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
-        validarPeriodo(periodo);
-        double delta = 0.0001;
-        double originalCapital = capital;
-
-        capital = originalCapital + delta;
-        double saldoPlus = calcularSaldo(periodo);
-
-        capital = originalCapital - delta;
-        double saldoMinus = calcularSaldo(periodo);
-
-        capital = originalCapital;
-        return (saldoPlus - saldoMinus) / (2 * delta);
+        double delta = 1e-4;
+        double orig = capital;
+        capital = orig + delta;
+        double plus = calcular_S_t(periodo);
+        capital = orig - delta;
+        double minus = calcular_S_t(periodo);
+        capital = orig;
+        return (plus - minus) / (2 * delta);
     }
 
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
-        validarPeriodo(periodo);
-        double delta = 0.0001;
-        double originalTasa = tasaInteres;
-
-        tasaInteres = originalTasa + delta;
-        double saldoPlus = calcularSaldo(periodo);
-
-        tasaInteres = originalTasa - delta;
-        double saldoMinus = calcularSaldo(periodo);
-
-        tasaInteres = originalTasa;
-        return (saldoPlus - saldoMinus) / (2 * delta);
+        double delta = 1e-4;
+        double orig = tasaInteres;
+        tasaInteres = orig + delta;
+        double plus = calcular_S_t(periodo);
+        tasaInteres = orig - delta;
+        double minus = calcular_S_t(periodo);
+        tasaInteres = orig;
+        return (plus - minus) / (2 * delta);
     }
 
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
-        validarPeriodo(periodo);
-        if (periodo == 1) return calcularSaldo(1); // no hay periodo anterior
-        double saldoActual = calcularSaldo(periodo);
-        double saldoAnterior = calcularSaldo(periodo - 1);
-        return saldoActual - saldoAnterior;
-    }
-
-    private void validarPeriodo(int periodo) {
-        if (periodo < 1 || periodo > numeroCuotas) {
-            throw new IllegalArgumentException("El periodo debe estar entre 1 y " + numeroCuotas);
-        }
+        if (periodo < numeroCuotas)
+            return calcular_S_t(periodo + 1) - calcular_S_t(periodo);
+        else
+            return derivadaSaldoRespectoTiempo(periodo - 1);
     }
 }

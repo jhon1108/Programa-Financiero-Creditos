@@ -6,91 +6,108 @@ public class MetodoFrances extends MetodoAmortizacion {
         super(capital, tasaInteres, numeroCuotas);
     }
 
+    // ===================== MÉTODOS PRINCIPALES =====================
+
     @Override
-    public double calcularCuota(int periodo) {
-        validarPeriodo(periodo);
+    public double calcular_a_t(int periodo) {
         double r = tasaInteres;
         int n = numeroCuotas;
-        if (r == 0) return capital / n; // caso sin interés
-        return capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+        double a = capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        return Math.round(a * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularInteres(int periodo, double saldoAnterior) {
-        validarPeriodo(periodo);
-        if (saldoAnterior < 0) throw new IllegalArgumentException("El saldo anterior no puede ser negativo.");
-        return saldoAnterior * tasaInteres;
+    public double calcular_A_t(int periodo) {
+        double r = tasaInteres;
+        double a = calcular_a_t(periodo);
+
+        double saldoAnterior = capital * Math.pow(1 + r, periodo - 1)
+                - a * (Math.pow(1 + r, periodo - 1) - 1) / r;
+
+        double interes = saldoAnterior * r;
+        double amortizacion = a - interes;
+
+        return Math.round(amortizacion * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularAmortizacion(int periodo, double cuota, double interes) {
-        validarPeriodo(periodo);
-        if (cuota < 0 || interes < 0) throw new IllegalArgumentException("Cuota e interés deben ser positivos.");
-        return cuota - interes;
+    public double calcular_I_t(int periodo) {
+        double r = tasaInteres;
+        double a = calcular_a_t(periodo);
+
+        double saldoAnterior = capital * Math.pow(1 + r, periodo - 1)
+                - a * (Math.pow(1 + r, periodo - 1) - 1) / r;
+
+        double interes = saldoAnterior * r;
+        return Math.round(interes * 100.0) / 100.0;
     }
 
     @Override
-    public double calcularSaldo(int periodo) {
-        validarPeriodo(periodo);
-        double cuota = calcularCuota(periodo);
-        double saldo = capital;
-        for (int t = 1; t <= periodo; t++) {
-            double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-        }
-        return saldo;
+    public double calcular_S_t(int periodo) {
+        double r = tasaInteres;
+        int n = numeroCuotas;
+
+        double a = capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+        double saldo = capital * Math.pow(1 + r, periodo)
+                - a * (Math.pow(1 + r, periodo) - 1) / r;
+
+        return Math.max(0, Math.round(saldo * 100.0) / 100.0);
     }
+
+    // ===================== DERIVADAS ENTRE PERIODOS (SUAVIZADAS) =====================
+
+    @Override
+    public double derivada_a_t(int periodo) {
+        // Cuota constante → derivada = 0
+        return 0;
+    }
+
+    @Override
+    public double derivada_A_t(int periodo) {
+        if (periodo == 1)
+            return Math.round((calcular_A_t(2) - calcular_A_t(1)) * 100.0) / 100.0;
+        return Math.round((calcular_A_t(periodo) - calcular_A_t(periodo - 1)) * 100.0) / 100.0;
+    }
+
+    @Override
+    public double derivada_I_t(int periodo) {
+        if (periodo == 1)
+            return Math.round((calcular_I_t(2) - calcular_I_t(1)) * 100.0) / 100.0;
+        return Math.round((calcular_I_t(periodo) - calcular_I_t(periodo - 1)) * 100.0) / 100.0;
+    }
+
+    @Override
+    public double derivada_S_t(int periodo) {
+        if (periodo == 1)
+            return Math.round((calcular_S_t(2) - calcular_S_t(1)) * 100.0) / 100.0;
+        return Math.round((calcular_S_t(periodo) - calcular_S_t(periodo - 1)) * 100.0) / 100.0;
+    }
+
+    // ===================== DERIVADAS PERSONALIZADAS =====================
 
     @Override
     public double derivadaSaldoRespectoTasa(int periodo) {
-        validarPeriodo(periodo);
-        double cuota = calcularCuota(periodo);
-        double saldo = capital;
-        double derivada = 0;
-        for (int t = 1; t <= periodo; t++) {
-            double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-            derivada += -saldo * t;
-        }
-        return derivada;
+        double r = this.getTasaInteres();
+        double t = (double) periodo;
+
+        if (r == 0)
+            return -t; // límite cuando r → 0
+
+        return (1.0 / r) * (1.0 - Math.exp(r * t));
     }
 
     @Override
     public double derivadaSaldoRespectoTiempo(int periodo) {
-        validarPeriodo(periodo);
-        double cuota = calcularCuota(periodo);
-        double saldo = capital;
-        double derivada = 0;
-        for (int t = 1; t <= periodo; t++) {
-            double interes = saldo * tasaInteres;
-            double amortizacion = cuota - interes;
-            saldo -= amortizacion;
-            derivada += -tasaInteres * saldo;
-        }
-        return derivada;
+        return (-calcular_a_t(1));
     }
 
     @Override
     public double derivadaSaldoRespectoCapital(int periodo) {
-        validarPeriodo(periodo);
-        double delta = 0.0001;
-        double originalCapital = capital;
+        double r = this.getTasaInteres();
+        double t = (double) periodo;
 
-        capital = originalCapital + delta;
-        double saldoPlus = calcularSaldo(periodo);
-
-        capital = originalCapital - delta;
-        double saldoMinus = calcularSaldo(periodo);
-
-        capital = originalCapital;
-        return (saldoPlus - saldoMinus) / (2 * delta);
-    }
-
-    private void validarPeriodo(int periodo) {
-        if (periodo < 1 || periodo > numeroCuotas) {
-            throw new IllegalArgumentException("El periodo debe estar entre 1 y " + numeroCuotas);
-        }
+        return Math.exp(r * t);
     }
 }
