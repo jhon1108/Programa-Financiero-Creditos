@@ -29,3 +29,30 @@
 .label-titulo {
     -fx-font-family: "Poppins Black";
 }
+
+
+.spinner .text-field {
+    -fx-background-color: #0c2937;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+
+.spinner .arrow-button {
+    -fx-background-color: #0c2937;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+
+.spinner .arrow-button .arrow {
+    -fx-fill: white;
+}
+
+
+
+
+

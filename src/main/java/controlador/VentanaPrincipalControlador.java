@@ -205,29 +205,35 @@ public class VentanaPrincipalControlador {
                 );
         spSeleccionarGrafico.setValueFactory(valueFactory);
         spSeleccionarGrafico.getValueFactory().setValue("Cuota");
+        drawChart("Cuota", lista, lineChart);
 
-// Configurar ejes del LineChart (ya definidos en FXML)
+
+
+
+
+
+
         NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
         NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
 
         xAxis.setLabel("Periodo (t)");
         yAxis.setLabel("Valor");
 
-// Ajuste de eje Y para valores pequeños o negativos
+
         yAxis.setAutoRanging(true);
         yAxis.setForceZeroInRange(false);
 
-// Desactivar animaciones
+
         lineChart.setAnimated(false);
 
-// Listener del spinner
+
         spSeleccionarGrafico.valueProperty().addListener((obs, oldVal, newVal) -> {
             lineChart.getData().clear();
 
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(newVal);
 
-            // ✅ Versión corregida — usa Double.isNaN y Double.isInfinite
+
             java.util.function.BiConsumer<Number, Number> addSafe = (t, val) -> {
                 if (t != null && val != null) {
                     double tt = t.doubleValue();
@@ -314,15 +320,11 @@ public class VentanaPrincipalControlador {
         blur = new GaussianBlur(50);
         anchorViabilidad.setEffect(blur);
         GaussianBlur blur = new GaussianBlur(25);
-        // Traer ambos rectángulos al frente
+
 
         rctTodo11.toFront();
 
-// Crear un solo efecto blu
 
-// --- RECTÁNGULO 1 ---
-
-// --- RECTÁNGULO 2 ---
         rctTodo11.setEffect(blur);
         rctTodo11.setX(rctTodo11.getX() - 30);
         rctTodo11.setY(rctTodo11.getY() - 30);
@@ -402,38 +404,74 @@ public class VentanaPrincipalControlador {
     }
     private void aplicarAnimacionDesenfoque2(Rectangle... rectangulos) {
         for (Rectangle rect : rectangulos) {
-            // Asegúrate de que sean visibles antes de iniciar
+
             rect.setVisible(true);
             rect.setOpacity(1);
 
-            // Aplica desenfoque suave
+
             GaussianBlur blur = new GaussianBlur(30);
             rect.setEffect(blur);
 
-            // Animación del blur (de más a menos)
+
             Timeline animBlur = new Timeline(
                     new KeyFrame(Duration.ZERO, new KeyValue(blur.radiusProperty(), 30)),
                     new KeyFrame(Duration.seconds(1.0), new KeyValue(blur.radiusProperty(), 0))
             );
 
-            // Animación del desvanecimiento (fade out)
+
             Timeline fadeOut = new Timeline(
                     new KeyFrame(Duration.ZERO, new KeyValue(rect.opacityProperty(), 1)),
                     new KeyFrame(Duration.seconds(1.0), new KeyValue(rect.opacityProperty(), 0))
             );
 
-            // Cuando termina, quitar efecto y ocultar
+
             fadeOut.setOnFinished(e -> {
                 rect.setVisible(false);
                 rect.setEffect(null);
-                rect.setOpacity(1); // por si se vuelve a usar
+                rect.setOpacity(1);
             });
 
-            // Ejecutar ambas animaciones juntas
+
             animBlur.play();
             fadeOut.play();
         }
     }
+    private void drawChart(String tipo, List<PeriodoCredito> lista, LineChart<Number, Number> lineChart) {
+        lineChart.getData().clear();
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName(tipo);
+
+        java.util.function.BiConsumer<Number, Number> addSafe = (t, val) -> {
+            if (t != null && val != null) {
+                double tt = t.doubleValue();
+                double vv = val.doubleValue();
+                if (!Double.isNaN(tt) && !Double.isInfinite(tt)
+                        && !Double.isNaN(vv) && !Double.isInfinite(vv)) {
+                    series.getData().add(new XYChart.Data<>(tt, vv));
+                }
+            }
+        };
+
+        switch (tipo) {
+            case "Cuota" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getA_t()));
+            case "Amortizacion" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getA_t_acum()));
+            case "Intereses" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getI_t()));
+            case "Saldo" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getS_t()));
+            case "Cuota Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getA_t_prime()));
+            case "Amortizacion Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getA_t_acum_prime()));
+            case "Intereses Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getI_t_prime()));
+            case "Saldo Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getS_t_prime()));
+        }
+
+        lineChart.getData().add(series);
+
+        series.nodeProperty().addListener((o, oldNode, newNode) -> {
+            if (newNode != null) {
+                newNode.setStyle("-fx-stroke: #00bfff; -fx-stroke-width: 2px;");
+            }
+        });
+    }
+
 
 
 
