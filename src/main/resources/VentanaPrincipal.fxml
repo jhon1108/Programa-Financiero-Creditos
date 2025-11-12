@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -378,6 +380,50 @@
                                     </TableView>
                                  </children>
                               </AnchorPane>
+                              <Group fx:id="grupo1" layoutX="-247.0" layoutY="-113.0" visible="false">
+                                 <children>
+                                    <Rectangle fx:id="rctInfo" arcHeight="5.0" arcWidth="5.0" fill="#0f0f0fe2" height="671.0" stroke="#404040" strokeType="INSIDE" width="1031.0" />
+                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#091f2c" height="216.0" layoutX="338.0" layoutY="212.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="364.0" />
+                                    <Rectangle arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="39.0" layoutX="338.0" layoutY="208.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="364.0" />
+                                    <Rectangle arcHeight="1.0" arcWidth="1.0" fill="#0c2937" height="29.0" layoutX="339.0" layoutY="223.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="363.0" />
+                                    <Label layoutX="357.0" layoutY="219.0" prefHeight="27.0" prefWidth="223.0" styleClass="label-titulo" text="Informacion Variables" textFill="WHITE">
+                                       <font>
+                                          <Font name="Poppins Regular" size="17.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="350.0" layoutY="253.0" prefHeight="52.0" prefWidth="337.0" styleClass="label-cuerpo" text="C(t): representa cuota que debe pagar el prestamista en un plazo, es la suma de la amortizacion de capital e intereses." textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="11.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="352.0" layoutY="311.0" prefHeight="52.0" prefWidth="186.0" styleClass="label-cuerpo" text="A(t): representa la amortizacion del capital, es decir el contra-prestamo real en un instante." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="10.0" />
+                                       </font></Label>
+                                    <Label layoutX="522.0" layoutY="310.0" prefHeight="52.0" prefWidth="157.0" styleClass="label-cuerpo" text="I(t): representa lo que se cancela de los intereses generados en un instante." textAlignment="RIGHT" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="10.0" />
+                                       </font></Label>
+                                    <Label layoutX="378.0" layoutY="374.0" prefHeight="52.0" prefWidth="282.0" styleClass="label-cuerpo" text="S(t): representa el saldo restante lo que hasta la cancelacion total del credito en un instante." textAlignment="JUSTIFY" textFill="WHITE" wrapText="true">
+                                       <font>
+                                          <Font name="Poppins Light" size="12.0" />
+                                       </font></Label>
+                                    <Button layoutX="648.0" layoutY="218.0" mnemonicParsing="false" onAction="#quitarAviso" prefHeight="25.0" prefWidth="24.0" style="-fx-background-radius: 50; -fx-background-color: red;" textFill="RED">
+                                       <graphic>
+                                          <ImageView fitHeight="23.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@image%20(28).png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <effect>
+                                          <Bloom threshold="0.69" />
+                                       </effect>
+                                    </Button>
+                                    <Separator layoutX="348.0" layoutY="301.0" prefHeight="7.0" prefWidth="338.0" />
+                                    <Separator layoutX="346.0" layoutY="370.0" prefHeight="7.0" prefWidth="338.0" />
+                                 </children>
+                              </Group>
                            </children></AnchorPane>
                      </center>
                   </BorderPane>
@@ -398,7 +444,34 @@
                               <Image url="@image-removebg-preview%20(7)_imgupscaler.ai_Mejorador_2K.png" />
                            </image>
                         </ImageView>
-                        <Button fx:id="botonReestablecer" layoutX="781.0" layoutY="38.0" mnemonicParsing="false" onAction="#reestablecerEntradas" text="Button" />
+                        <Button fx:id="botonReestablecer" layoutX="872.0" layoutY="30.0" mnemonicParsing="false" onAction="#reestablecerEntradas" prefHeight="41.0" prefWidth="41.0" style="-fx-background-radius: 50;" styleClass="circular-button" AnchorPane.bottomAnchor="30.0" AnchorPane.topAnchor="30.0">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image%20(28).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <effect>
+                              <Bloom threshold="0.7" />
+                           </effect></Button>
+                        <Button layoutX="930.0" layoutY="30.0" mnemonicParsing="false" onAction="#mostrarInfo" prefHeight="41.0" prefWidth="41.0" style="-fx-background-radius: 50;" styleClass="circular-button">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@image%20(29).png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <effect>
+                              <Bloom threshold="0.71" />
+                           </effect>
+                        </Button>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="-56.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@image%20(28).png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
                </center>

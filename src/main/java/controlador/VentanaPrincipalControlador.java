@@ -7,6 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import java.io.File;
+import java.io.FileWriter;
+import javafx.stage.FileChooser;
 import javafx.scene.Group;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.CacheHint;
@@ -21,35 +24,33 @@ import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import modelo.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class VentanaPrincipalControlador {
 
     private Usuario usuario;
-
+    List<PeriodoCredito> lista;
 
     @FXML
     private ChoiceBox<String> choiceTipoAmortizacion;
+
     @FXML
     private AnchorPane anchorGrande;
+
     @FXML
     private Group grupo1;
 
-    @FXML
-    private Group grupo2;
-
-    @FXML
-    private Rectangle rctTodo1;
 
     @FXML
     private Rectangle rctTodo11;
 
-    @FXML
-    private Rectangle rctTodo2;
 
     @FXML
     private Rectangle rctViabilidad;
@@ -164,6 +165,29 @@ public class VentanaPrincipalControlador {
 
     @FXML
     void exportarInfo(ActionEvent event) {
+        ArchivoCSV exp= new ArchivoCSV();
+        String contenido= exp.generarCSV(lista);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar archivo CSV");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Archivos CSV", "*.csv")
+        );
+
+        fileChooser.setInitialFileName("datos.csv");
+
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        File archivo = fileChooser.showSaveDialog(stage);
+
+        if (archivo != null) {
+            try (FileWriter writer = new FileWriter(archivo)) {
+                writer.write(contenido);
+                System.out.println("Archivo guardado en: " + archivo.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
@@ -201,7 +225,7 @@ public class VentanaPrincipalControlador {
             credito= new Credito(usuario, new MetodoGeometrico(capital,intereses,plazo,crecimiento));
         }
         ProyectarFunciones proyectarFunciones=new ProyectarFunciones(credito);
-        List<PeriodoCredito> lista = proyectarFunciones.getTabla();
+        lista = proyectarFunciones.getTabla();
         ObservableList<PeriodoCredito> data = FXCollections.observableArrayList(lista);
         tablaAmortizacion.setItems(data);
         AnalizarSensibilidad sensibilidad=new AnalizarSensibilidad(credito);
@@ -267,6 +291,11 @@ public class VentanaPrincipalControlador {
         });
         aplicarAnimacionDesenfoque2(rctTodo11);
         btnProyectarCredito.setDisable(true);
+        txtCapital.setDisable(true);
+        txtIntereses.setDisable(true);
+        txtPlazo.setDisable(true);
+        txtCrecimiento.setDisable(true);
+        btnExportar.setDisable(false);
 
     }
 
@@ -319,17 +348,41 @@ public class VentanaPrincipalControlador {
         txtIntereses.clear();
         txtPlazo.clear();
         txtCrecimiento.clear();
+        txtNombre.setDisable(false);
+        txtIngresos.setDisable(false);
+        txtGastos.setDisable(false);
+        txtDeudas.setDisable(false);
+        txtCapital.setDisable(false);
+        txtIntereses.setDisable(false);
+        txtPlazo.setDisable(false);
+        String tipo = choiceTipoAmortizacion.getValue();
+        if ("Progresion Arimetica".equals(tipo)) {
+            txtCrecimiento.setDisable(false);
+        } else if ("Progresion Geometrica".equals(tipo)) {
+            txtCrecimiento.setDisable(false);
+        } else {
+            txtCrecimiento.setDisable(true);
+        }
         rctTodo11.setVisible(true);
         btnGenerarVaibilidad.setDisable(false);
         btnProyectarCredito.setDisable(false);
+        rctViabilidad.setVisible(true);
+        btnExportar.setDisable(true);
+    }
 
+    @FXML
+    void mostrarInfo(ActionEvent event) {
+        grupo1.toFront();
+        grupo1.setVisible(true);
+    }
 
-
-
-
-
+    @FXML
+    void quitarAviso(ActionEvent event) {
+        grupo1.setVisible(false);
     }
     public void initialize() {
+        grupo1.setVisible(false);
+        btnExportar.setDisable(true);
         blur = new GaussianBlur(50);
         anchorViabilidad.setEffect(blur);
         GaussianBlur blur = new GaussianBlur(25);
@@ -339,11 +392,6 @@ public class VentanaPrincipalControlador {
         rctTodo11.setY(rctTodo11.getY() - 30);
         rctTodo11.setWidth(rctTodo11.getWidth() + 60);
         rctTodo11.setHeight(rctTodo11.getHeight() + 60);
-
-
-
-
-
         txtCrecimiento.setDisable(true);
         choiceTipoAmortizacion.getItems().addAll("Frances", "Americano", "Aleman", "Progresion Arimetica", "Progresion Geometrica");
         choiceTipoAmortizacion.setValue("Frances");

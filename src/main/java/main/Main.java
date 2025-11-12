@@ -3,6 +3,7 @@ package main;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
@@ -21,6 +22,7 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA2), 1);
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA3), 1);
         Font.loadFont(getClass().getResourceAsStream(Rutas.TIPOGRAFIA4), 1);
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(Rutas.ICONO)));
         BorderPane pane = loader.load();
         Scene scene = new Scene(pane);
         scene.getStylesheets().add(getClass().getResource(Rutas.ESTILOS).toExternalForm());

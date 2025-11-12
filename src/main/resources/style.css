@@ -51,6 +51,16 @@
 .spinner .arrow-button .arrow {
     -fx-fill: white;
 }
+.circular-button {
+    -fx-background-color: #051620;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
 
 
 
