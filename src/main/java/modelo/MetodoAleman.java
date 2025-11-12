@@ -6,7 +6,6 @@ public class MetodoAleman extends MetodoAmortizacion {
         super(capital, tasaInteres, numeroCuotas);
     }
 
-    // ===================== MÉTODOS PRINCIPALES =====================
 
     @Override
     public double calcular_a_t(int periodo) {

@@ -67,6 +67,9 @@ public class VentanaPrincipalControlador {
     private TableColumn<?, ?> colAmortizacionD;
 
     @FXML
+    private Button botonReestablecer;
+
+    @FXML
     private TableColumn<?, ?> colCuota;
 
     @FXML
@@ -115,6 +118,16 @@ public class VentanaPrincipalControlador {
     private AnchorPane anchorViabilidad;
 
     @FXML
+    private Button btnExportar;
+
+    @FXML
+    private Button btnGenerarVaibilidad;
+
+    @FXML
+    private Button btnProyectarCredito;
+
+
+    @FXML
     private Label lblTitulo;
 
     @FXML
@@ -147,6 +160,8 @@ public class VentanaPrincipalControlador {
     @FXML
     private TextField txtPlazo;
 
+    private GaussianBlur blur;
+
     @FXML
     void exportarInfo(ActionEvent event) {
 
@@ -159,7 +174,6 @@ public class VentanaPrincipalControlador {
         int plazo = 0;
         double crecimiento = 0;
         Credito credito;
-
         try{
             if((choiceTipoAmortizacion.getValue().equals("Progresion Arimetica")) || (choiceTipoAmortizacion.getValue().equals("Progresion Geometrica"))) {
                 capital= Double.parseDouble(txtCapital.getText());
@@ -172,6 +186,7 @@ public class VentanaPrincipalControlador {
                 plazo = Integer.parseInt(txtPlazo.getText());
             }
         }catch(Exception e){
+            mostrarAviso("Ingreso incorrecto de datos");
             return;
         }
         if(choiceTipoAmortizacion.getValue().equals("Frances")){
@@ -206,27 +221,13 @@ public class VentanaPrincipalControlador {
         spSeleccionarGrafico.setValueFactory(valueFactory);
         spSeleccionarGrafico.getValueFactory().setValue("Cuota");
         drawChart("Cuota", lista, lineChart);
-
-
-
-
-
-
-
         NumberAxis xAxis = (NumberAxis) lineChart.getXAxis();
         NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
-
         xAxis.setLabel("Periodo (t)");
         yAxis.setLabel("Valor");
-
-
         yAxis.setAutoRanging(true);
         yAxis.setForceZeroInRange(false);
-
-
         lineChart.setAnimated(false);
-
-
         spSeleccionarGrafico.valueProperty().addListener((obs, oldVal, newVal) -> {
             lineChart.getData().clear();
 
@@ -255,11 +256,6 @@ public class VentanaPrincipalControlador {
                 case "Intereses Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getI_t_prime()));
                 case "Saldo Derivada" -> lista.forEach(pc -> addSafe.accept(pc.getT(), pc.getS_t_prime()));
             }
-
-            if (series.getData().isEmpty()) {
-                System.out.println("⚠ No hay datos válidos para: " + newVal);
-            }
-
             lineChart.getData().add(series);
 
             // Estilo de línea
@@ -270,20 +266,9 @@ public class VentanaPrincipalControlador {
             });
         });
         aplicarAnimacionDesenfoque2(rctTodo11);
-
-
-
-
-
-
-
-
-
-
-
+        btnProyectarCredito.setDisable(true);
 
     }
-    private GaussianBlur blur;
 
     @FXML
     void generarViabilidad(ActionEvent event) {
@@ -297,6 +282,7 @@ public class VentanaPrincipalControlador {
             gastosFijos = Double.parseDouble(txtGastos.getText());
             deudas = Double.parseDouble(txtDeudas.getText());
         }catch(Exception e){
+            mostrarAviso("Ingreso incorrecto de datos");
             return;
         }
         usuario = new Usuario(nombre, ingresosFijos, gastosFijos, deudas);
@@ -313,6 +299,33 @@ public class VentanaPrincipalControlador {
         anchorViabilidad.toFront();
         rctViabilidad.setVisible(false);
         aplicarAnimacionDesenfoque(anchorViabilidad);
+        btnGenerarVaibilidad.setDisable(true);
+        txtNombre.setDisable(true);
+        txtIngresos.setDisable(true);
+        txtGastos.setDisable(true);
+        txtDeudas.setDisable(true);
+    }
+    @FXML
+    void reestablecerEntradas(ActionEvent event) {
+        anchorViabilidad.setEffect(blur);
+        GaussianBlur blur = new GaussianBlur(25);
+        rctTodo11.toFront();
+        rctTodo11.setEffect(blur);
+        txtNombre.clear();
+        txtIngresos.clear();
+        txtGastos.clear();
+        txtDeudas.clear();
+        txtCapital.clear();
+        txtIntereses.clear();
+        txtPlazo.clear();
+        txtCrecimiento.clear();
+        rctTodo11.setVisible(true);
+        btnGenerarVaibilidad.setDisable(false);
+        btnProyectarCredito.setDisable(false);
+
+
+
+
 
 
     }
@@ -320,11 +333,7 @@ public class VentanaPrincipalControlador {
         blur = new GaussianBlur(50);
         anchorViabilidad.setEffect(blur);
         GaussianBlur blur = new GaussianBlur(25);
-
-
         rctTodo11.toFront();
-
-
         rctTodo11.setEffect(blur);
         rctTodo11.setX(rctTodo11.getX() - 30);
         rctTodo11.setY(rctTodo11.getY() - 30);
@@ -470,6 +479,13 @@ public class VentanaPrincipalControlador {
                 newNode.setStyle("-fx-stroke: #00bfff; -fx-stroke-width: 2px;");
             }
         });
+    }
+    public void mostrarAviso(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.ERROR);
+        alerta.setTitle("Aviso");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 
 

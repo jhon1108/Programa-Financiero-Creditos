@@ -48,7 +48,7 @@
                                     <Font name="Poppins SemiBold" size="18.0" />
                                  </font>
                               </Label>
-                              <Button layoutX="7.0" layoutY="171.0" mnemonicParsing="false" onAction="#generarViabilidad" prefHeight="22.0" prefWidth="191.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6;" text="Generar Viabilidad" textFill="WHITE">
+                              <Button fx:id="btnGenerarVaibilidad" layoutX="7.0" layoutY="171.0" mnemonicParsing="false" onAction="#generarViabilidad" prefHeight="22.0" prefWidth="191.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6;" text="Generar Viabilidad" textFill="WHITE">
                                  <font>
                                     <Font name="Microsoft Yi Baiti" size="12.0" />
                                  </font>
@@ -88,7 +88,7 @@
                               <TextField fx:id="txtIntereses" layoutX="90.0" layoutY="118.0" prefHeight="25.0" prefWidth="101.0" style="-fx-background-color: #051620;" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="100.0" />
                               <TextField fx:id="txtPlazo" layoutX="91.0" layoutY="151.0" prefHeight="25.0" prefWidth="104.0" style="-fx-background-color: #051620;" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="140.0" />
                               <ChoiceBox id="choiceTipoAmortizacion" fx:id="choiceTipoAmortizacion" layoutX="14.0" layoutY="24.0" prefHeight="25.0" prefWidth="181.0" style="-fx-background-color: #051620;" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0" />
-                              <Button layoutX="7.0" layoutY="215.0" minHeight="10.0" minWidth="10.0" mnemonicParsing="false" onAction="#generarProyeccion" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6; -fx-font-size: 10; -fx-font-weight: normal; -fx-scale-x: 1; -fx-scale-y: 1;" text="Proyectar Credito" textFill="WHITE">
+                              <Button fx:id="btnProyectarCredito" layoutX="7.0" layoutY="215.0" minHeight="10.0" minWidth="10.0" mnemonicParsing="false" onAction="#generarProyeccion" prefHeight="25.0" prefWidth="122.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6; -fx-font-size: 10; -fx-font-weight: normal; -fx-scale-x: 1; -fx-scale-y: 1;" text="Proyectar Credito" textFill="WHITE">
                                  <font>
                                     <Font name="Microsoft Yi Baiti" size="10.0" />
                                  </font>
@@ -96,7 +96,7 @@
                                     <Bloom threshold="0.72" />
                                  </effect>
                               </Button>
-                              <Button layoutX="133.0" layoutY="215.0" minHeight="10.0" minWidth="10.0" mnemonicParsing="false" onAction="#exportarInfo" prefHeight="25.0" prefWidth="59.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6; -fx-font-size: 10; -fx-font-weight: normal; -fx-scale-x: 1; -fx-scale-y: 1;" text="Exportar" textFill="WHITE">
+                              <Button fx:id="btnExportar" layoutX="133.0" layoutY="215.0" minHeight="10.0" minWidth="10.0" mnemonicParsing="false" onAction="#exportarInfo" prefHeight="25.0" prefWidth="59.0" style="-fx-border-width: 2; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: #39c2e6; -fx-font-size: 10; -fx-font-weight: normal; -fx-scale-x: 1; -fx-scale-y: 1;" text="Exportar" textFill="WHITE">
                                  <font>
                                     <Font name="Poppins SemiBold" size="10.0" />
                                  </font>
@@ -222,7 +222,7 @@
                                     <Rectangle fx:id="rctViabilidad" arcHeight="40.0" arcWidth="40.0" fill="#0c2937" height="224.0" layoutX="-1.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
                                  </children>
                               </AnchorPane>
-                              <Spinner fx:id="spSeleccionarGrafico" layoutX="13.0" layoutY="262.0" prefHeight="25.0" prefWidth="195.0" />
+                              <Spinner fx:id="spSeleccionarGrafico" layoutX="13.0" layoutY="262.0" prefHeight="25.0" prefWidth="195.0" style="-fx-background-color: #0c2937;" />
                               <StackPane layoutX="221.0" layoutY="262.0" prefHeight="257.0" prefWidth="517.0" style="-fx-padding: 10; -fx-background-radius: 20; -fx-background-color: white;">
                                  <children>
                                     <LineChart fx:id="lineChart" prefHeight="237.0" prefWidth="385.0">
@@ -398,6 +398,7 @@
                               <Image url="@image-removebg-preview%20(7)_imgupscaler.ai_Mejorador_2K.png" />
                            </image>
                         </ImageView>
+                        <Button fx:id="botonReestablecer" layoutX="781.0" layoutY="38.0" mnemonicParsing="false" onAction="#reestablecerEntradas" text="Button" />
                      </children>
                   </AnchorPane>
                </center>
